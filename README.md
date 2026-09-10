@@ -15,40 +15,16 @@ Este projeto faz parte de uma iniciativa de **trabalho voluntário** focada na e
 O objetivo principal é transformar processos manuais e burocráticos em um ecossistema digital fluido, eficiente e seguro, utilizando **Inteligência Artificial (IA)** para o mapeamento de processos e **ferramentas nativas do Google Workspace (Google Sheets, Forms, Docs, Drive e Apps Script)** para automação de ponta a ponta sem custos de licença.
 
 ---
+🗺️ Mapa do Fluxo do Processo (Arquitetura 360°)
 
-## 🗺️ Mapa do Fluxo do Processo (Arquitetura 360°)
-
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                               1. ENTRADA DE DADOS (RH)                                 │
-│  Lançamento dos dados do aprovado na planilha '00_PreCadastro' (Status: Pendente)      │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-│
-▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                          2. DISPARO AUTOMÁTICO DE CONVOCAÇÃO                           │
-│  Acionamento via botão no Google Sheets -> Disparo de e-mail customizado com link     │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-│
-▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                         3. COLETA DIGITAL DE DOCUMENTOS (CANDIDATO)                    │
-│  Preenchimento do Google Forms + Upload de Documentos Pessoais, Bancários e Dependentes│
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-│
-▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        4. GOVERNANÇA DE ARQUIVOS (APPS SCRIPT + DRIVE)                 │
-│  Gatilho 'onFormSubmit' -> Criação da pasta 'Nome - CPF' no Drive + Mover anexos       │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-│
-▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                         5. AUDITORIA, ASO E QUALIFICAÇÃO ESOCIAL                       │
-│  Validação Cadastral + Encaminhamento p/ Exame Admissional (NR-07) + Transmissão S-2200│
-└────────────────────────────────────────────────────────────────────────────────────────┘
-
-
----
+| Etapa | Responsável | Ação / Automação | Entrega do Processo |
+| :---: | :--- | :--- | :--- |
+| **1** | 👤 **RH / Gestão** | Entrada de dados do aprovado na aba `00_PreCadastro` | Status gravado como `Pendente Disparo` |
+| **2** | ⚙️ **Apps Script** | Clique no menu **🚀 Automação DP** na planilha | E-mail customizado enviado com link do Forms |
+| **3** | 📑 **Candidato** | Preenchimento do formulário e envio de documentos | Upload de RG, CPF, Comp. Bancário e Dependentes |
+| **4** | 📂 **Google Drive** | Gatilho automático `onFormSubmit` via script | Pasta `Nome - CPF` criada com anexos salvos |
+| **5** | ⚖️ **DP / Compliance**| Checagem cadastral, ASO Admissional e eSocial | Geração e envio do evento **S-2200** |
+    style E fill:#ffebee,stroke:#f44336,stroke-width:2px,color:#b71c1c
 
 ## 📋 1. Procedimento Operacional Padrão (POP) — Admissão e Registro
 
