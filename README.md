@@ -1,27 +1,129 @@
+
+# 🚀 Projeto de Estruturação e Automação de DP & DHO
+
+![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-blue)
+![Iniciativa](https://img.shields.io/badge/Iniciativa-Trabalho_Volunt%C3%A1rio-orange)
+![Google Workspace](https://img.shields.io/badge/Stack-Google_Workspace_--_Apps_Script-4285F4?logo=google)
+![Compliance](https://img.shields.io/badge/Compliance-CLT_--_eSocial_--_LGPD-green)
+
+---
+
+## 📌 Visão Geral do Projeto
+
+Este projeto faz parte de uma iniciativa de **trabalho voluntário** focada na estruturação, padronização e automação das áreas de **Departamento Pessoal (DP)** e **Desenvolvimento Humano e Organizacional (DHO)**. 
+
+O objetivo principal é transformar processos manuais e burocráticos em um ecossistema digital fluido, eficiente e seguro, utilizando **Inteligência Artificial (IA)** para o mapeamento de processos e **ferramentas nativas do Google Workspace (Google Sheets, Forms, Docs, Drive e Apps Script)** para automação de ponta a ponta sem custos de licença.
+
+---
+
+## 🗺️ Mapa do Fluxo do Processo (Arquitetura 360°)
+
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                               1. ENTRADA DE DADOS (RH)                                 │
+│  Lançamento dos dados do aprovado na planilha '00_PreCadastro' (Status: Pendente)      │
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+│
+▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                          2. DISPARO AUTOMÁTICO DE CONVOCAÇÃO                           │
+│  Acionamento via botão no Google Sheets -> Disparo de e-mail customizado com link     │
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+│
+▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                         3. COLETA DIGITAL DE DOCUMENTOS (CANDIDATO)                    │
+│  Preenchimento do Google Forms + Upload de Documentos Pessoais, Bancários e Dependentes│
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+│
+▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        4. GOVERNANÇA DE ARQUIVOS (APPS SCRIPT + DRIVE)                 │
+│  Gatilho 'onFormSubmit' -> Criação da pasta 'Nome - CPF' no Drive + Mover anexos       │
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+│
+▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                         5. AUDITORIA, ASO E QUALIFICAÇÃO ESOCIAL                       │
+│  Validação Cadastral + Encaminhamento p/ Exame Admissional (NR-07) + Transmissão S-2200│
+└────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+---
+
+## 📋 1. Procedimento Operacional Padrão (POP) — Admissão e Registro
+
+### 1.1. Checklist Documental Exigido
+
+Para garantir a conformidade trabalhista, tributária e bancária, o formulário de coleta digital exige os seguintes documentos:
+
+* **Documentos de Identificação:** RG ou CNH atualizada e CPF.
+* **Registros Trabalhistas:** Número do NIT / PIS / PASEP e CTPS Digital.
+* **Comprovação de Residência:** Comprovante de endereço emitido nos últimos 90 dias.
+* **Dados Bancários:** Comprovante de titularidade de conta bancária para pagamento de salário.
+* **Documentação de Dependentes (Se houver filhos/dependentes):**
+  * Certidão de Nascimento dos dependentes.
+  * Caderneta de Vacinação (para dependentes menores de 6 anos - Salário-Família).
+  * Comprovante de Frequência Escolar (para dependentes a partir de 7 anos).
+* **Saúde Ocupacional:** Atestado de Saúde Ocupacional (ASO) Admissional (Apto).
+
+---
+
+### 1.2. Prazos Legais e Matriz de Compliance
+
+| Etapa | Prazo Limite Legal | Base Legal / Normativa | Risco em Caso de Descumprimento |
+| :--- | :--- | :--- | :--- |
+| **Exame Médico (ASO)** | **Anterior** ao início das atividades | Art. 168 CLT / NR-07 | Interdição fiscal e nulidade da contratação. |
+| **Qualificação Cadastral** | Antes de emitir o contrato | Portal eSocial | Rejeição da admissão no eSocial. |
+| **eSocial (S-2200 / S-2190)** | Até as 23:59h do **dia anterior** ao início | Portaria MTP nº 671/2021 | Multa do Art. 47 da CLT (R$ 800 a R$ 3.000/empregado). |
+| **Registro CTPS Digital** | Até 5 dias úteis pós-início | Art. 29 da CLT | Autuação fiscal do Ministério do Trabalho. |
+
+---
+
+### 1.3. Matriz de Tratamento de Exceções ("O que fazer quando dá errado?")
+
+* **ASO com Resultado "Inapto" ou "Pendente":** Sustar a admissão imediatamente. O candidato não pode assumir o posto de trabalho sem laudo médico definitivo de aptidão.
+* **Divergência Cadastral no eSocial (CPF/Nome/Data de Nascimento):** Bloquear o envio do evento S-2200 e orientar o colaborador a regularizar o cadastro junto à Receita Federal ou App Meu INSS.
+* **Atraso na Entrega de Documentos:** Transmitir o evento **S-2190 (Admissão Preliminar)** no eSocial até o dia anterior ao início para evitar multas, concedendo prazo de 24 horas para regularização do envio completo.
+
+---
+
+## 🛠️ 2. Arquitetura da Solução Tecnológica
+
+A solução utiliza um ecossistema integrado em **Google Workspace** automatizado via **Google Apps Script**:
+
+* **Google Sheets:** Funciona como banco de dados e painel de controle operacional do RH.
+* **Google Forms:** Interface amigável e acessível via celular/computador para o candidato enviar os dados.
+* **Google Drive:** Repositório seguro com permissões restritas e organização automática de pastas por colaborador.
+* **Google Docs:** Geração de minutas padronizadas de contratos de trabalho e termos operacionais.
+* **Google Apps Script:** Código responsável pelo disparo de e-mails, criação de diretórios no Drive e geração da estrutura XML do eSocial.
+
+---
+
+## 💻 3. Código-Fonte da Automação (`codigo_automacao.gs`)
+
+```javascript
 /**
- * ECOSSISTEMA COMPLETO DE ADMISSÃO DIGITAL E AUTOMAÇÃO DE DP
- * Automação de Pré-Admissão, Governança no Drive e Layout eSocial (S-2200)
+ * ECOSSISTEMA DE ADMISSÃO DIGITAL E AUTOMAÇÃO DE DP & DHO
+ * Módulo: Pré-Admissão, Coleta de Documentos e eSocial
  */
 
-// ===========================================================================
-// CONFIGURAÇÕES DO USUÁRIO
-// ===========================================================================
-var ID_PASTA_RAIZ_DRIVE = "COLE_AQUI_O_ID_DA_SUA_PASTA_DO_DRIVE"; 
-var LINK_GOOGLE_FORMS   = "https://docs.google.com/forms/d/e/1FAIpQLSemBgne0oZzLcniX9RWvJgu9shZzbZ03kv1n-LtTKxvtEbNzA/viewform";
+// CONFIGURAÇÕES GLOBAIS
+var ID_PASTA_RAIZ_DRIVE = "SEU_ID_DA_PASTA_DO_DRIVE_AQUI"; 
+var LINK_GOOGLE_FORMS   = "SEU_LINK_DO_GOOGLE_FORMS_AQUI";
 
 /**
- * 1. Cria o menu personalizado na barra superior do Google Sheets ao abrir a planilha
+ * 1. Cria menu personalizado no Google Sheets ao abrir a planilha
  */
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('🚀 Automação DP')
-      .addItem('1. Disparar Convocação por E-mail', 'dispararEmailColeta')
+  ui.createMenu('🚀 Automação DP & DHO')
+      .addItem('1. Disparar Convite de Admissão por E-mail', 'dispararEmailColeta')
       .addItem('2. Gerar XML do eSocial (S-2200)', 'gerarXML_S2200')
       .addToUi();
 }
 
 /**
- * 2. Envia e-mail de convocação ao candidato contendo o link direto do formulário
+ * 2. Dispara e-mail de convocação com o link direto do formulário
  */
 function dispararEmailColeta() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("00_PreCadastro");
@@ -34,18 +136,23 @@ function dispararEmailColeta() {
   var disparos = 0;
   
   for (var i = 2; i <= lastRow; i++) {
-    var nome   = sheet.getRange(i, 1).getValue(); // Coluna A (Nome)
-    var email  = sheet.getRange(i, 2).getValue(); // Coluna B (E-mail)
-    var status = sheet.getRange(i, 5).getValue(); // Coluna E (Status Disparo)
+    var nome   = sheet.getRange(i, 1).getValue(); // Coluna A
+    var email  = sheet.getRange(i, 2).getValue(); // Coluna B
+    var status = sheet.getRange(i, 5).getValue(); // Coluna E
 
     if (status === "Pendente Disparo" && email !== "") {
       var assunto = "Processo de Admissão - Coleta de Documentos: " + nome;
       var corpo = "Olá, " + nome + "!\n\n" +
-                  "Seja bem-vindo(a)! Para dar continuidade ao seu registro profissional, " +
-                  "por favor acesse o link abaixo e envie seus dados e documentos:\n\n" +
+                  "Seja bem-vindo(a) à nossa equipe! Para darmos início ao seu processo de registro formal, " +
+                  "por favor acesse o link abaixo e envie seus dados e documentos obrigatórios:\n\n" +
                   LINK_GOOGLE_FORMS + "\n\n" +
+                  "DOCUMENTOS NECESSÁRIOS NO FORMULÁRIO:\n" +
+                  "- RG/CNH e CPF\n" +
+                  "- Comprovante de Residência recente\n" +
+                  "- Número do NIT/PIS e Comprovante Bancário\n" +
+                  "- Documentos de Dependentes (se houver filhos)\n\n" +
                   "Prazo máximo de preenchimento: 48 horas.\n\n" +
-                  "Atenciosamente,\nDepartamento Pessoal";
+                  "Atenciosamente,\nEquipe de DP & DHO";
 
       MailApp.sendEmail(email, assunto, corpo);
       sheet.getRange(i, 5).setValue("Link Enviado");
@@ -56,15 +163,14 @@ function dispararEmailColeta() {
 }
 
 /**
- * 3. Gatilho Automático (On Form Submit):
- * Cria a pasta individual no Drive (Nome - CPF), move arquivos e grava a URL na Coluna F da planilha.
+ * 3. Gatilho Automático (On Form Submit): Cria pasta Nome-CPF no Drive e move anexos
  */
 function aoSubmeterFormulario(e) {
   var aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("01_Coleta_Docs");
   var linha = e ? e.range.getRow() : aba.getLastRow();
   
-  var nomeCandidato = aba.getRange(linha, 2).getValue(); // Coluna B (Nome)
-  var cpfCandidato  = aba.getRange(linha, 3).getValue(); // Coluna C (CPF)
+  var nomeCandidato = aba.getRange(linha, 2).getValue(); 
+  var cpfCandidato  = aba.getRange(linha, 3).getValue(); 
   
   if (!nomeCandidato) return;
   
@@ -73,8 +179,8 @@ function aoSubmeterFormulario(e) {
   var nomeNovaPasta = nomeCandidato + (cpfCandidato ? " - " + cpfCandidato : "");
   var novaPasta = pastaRaiz.createFolder(nomeNovaPasta);
   
-  // Mover anexos (Colunas D e E)
-  var colunasComArquivos = [4, 5]; 
+  // Mover anexos (Colunas D, E, F e subsequentes com uploads)
+  var colunasComArquivos = [4, 5, 6, 7]; 
   colunasComArquivos.forEach(function(coluna) {
     var urlArquivo = aba.getRange(linha, coluna).getValue();
     if (urlArquivo && urlArquivo.toString().indexOf("http") !== -1) {
@@ -86,13 +192,13 @@ function aoSubmeterFormulario(e) {
     }
   });
   
-  // Gravar a URL da pasta criada na Coluna F
+  // Registrar link da pasta na Coluna H da planilha
   var linkPasta = novaPasta.getUrl();
-  aba.getRange(linha, 6).setValue(linkPasta);
+  aba.getRange(linha, 8).setValue(linkPasta);
 }
 
 /**
- * 4. Gera a estrutura do layout XML para o evento S-2200 do eSocial
+ * 4. Gera o leiaute XML do evento S-2200 do eSocial
  */
 function gerarXML_S2200() {
   var aba = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("00_PreCadastro");
@@ -128,13 +234,22 @@ function gerarXML_S2200() {
             '</eSocial>';
             
   Logger.log(xml);
-  SpreadsheetApp.getUi().alert("XML S-2200 gerado no Log do Editor!\nConsulte: Execuções > Logs no Apps Script");
+  SpreadsheetApp.getUi().alert("XML S-2200 gerado com sucesso nos Logs do Apps Script!");
 }
 
-/**
- * Função Auxiliar: Extrai o ID do arquivo a partir de uma URL do Google Drive
- */
 function extrairIdDoDrive(url) {
   var match = url.match(/[-\w]{25,}/);
   return match ? match[0] : null;
 }
+📈 4. Roadmap e Próximas Etapas
+[x] Módulo 1: Mapeamento de Admissão, Coleta Digital e Governança no Drive.
+
+[ ] Módulo 2: Gestão e Concessão de Benefícios (VT, VR/VA, Plano de Saúde).
+
+[ ] Módulo 3: Estruturação da Folha de Pagamento e Encargos (INSS, IRRF, FGTS).
+
+[ ] Módulo 4 (DHO): Programa de Onboarding e Avaliação de Desempenho de Experiência.
+
+📊 Estatísticas do Repositório
+👥 Contribuição e Licença
+Projeto desenvolvido como iniciativa voluntária de estruturação organizacional e automação de processos de Recursos Humanos.
